@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+set -euf -o pipefail
+
+remote="$1"
+if [ -e "$remote" ] ; then
+	echo "usage: git init-remote <repo>"
+	exit 1
+fi
+
+remote_host=$(echo "$remote" | cut -d ':' -f 1)
+remote_dir=$(echo "$remote" | cut -d ':' -f 2)
+local_dir=$(basename "${remote_dir%.git}")
+
+ssh "$remote_host" "git init --bare \"$remote_dir\""
+
+git clone "$remote" "$local_dir"
