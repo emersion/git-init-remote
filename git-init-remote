@@ -2,15 +2,17 @@
 
 set -euf -o pipefail
 
-remote="$1"
-if [ -e "$remote" ] ; then
-	echo "usage: git init-remote <repo>"
+if [ "$#" -lt 1 ] ; then
+	echo "usage: git init-remote <repo> [<dir>]"
 	exit 1
 fi
 
+remote="$1"
 remote_host=$(echo "$remote" | cut -d ':' -f 1)
 remote_dir=$(echo "$remote" | cut -d ':' -f 2)
+
 local_dir=$(basename "${remote_dir%.git}")
+local_dir=${2:-"$local_dir"}
 
 ssh "$remote_host" "git init --bare \"$remote_dir\""
 
