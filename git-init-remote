@@ -16,4 +16,11 @@ local_dir=${2:-"$local_dir"}
 
 ssh "$remote_host" "git init --bare \"$remote_dir\""
 
-git clone "$remote" "$local_dir"
+if [ -d "$local_dir/.git" ] ; then
+	(
+		cd "$local_dir"
+		git remote add origin "$remote"
+	)
+else
+	git clone "$remote" "$local_dir"
+fi
